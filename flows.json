@@ -359,22 +359,6 @@
         "wires": []
     },
     {
-        "id": "fcceeac6.705348",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Read spi0",
-        "func": "var spi0=global.get(\"spi0\");\nvar dataBufWrite = Buffer.alloc(4);\nspi0.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var temp0Msg = {topic:'temp0', payload:-100};\n    if (err)\n    {\n        node.send(temp0Msg);\n        flow.set('temp0', temp0Msg.payload);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        temp0Msg.payload = rawTemp;\n//        console.log(rawTemp);\n        node.send(temp0Msg);\n        flow.set('temp0', temp0Msg.payload);\n    }\n});\nreturn;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 280,
-        "y": 420,
-        "wires": [
-            [
-                "34044c9a.9a60f4"
-            ]
-        ]
-    },
-    {
         "id": "bf468d1e.232ab",
         "type": "inject",
         "z": "5f562f66.a301e",
@@ -382,7 +366,7 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "repeat": "2",
+        "repeat": "4",
         "crontab": "",
         "once": true,
         "onceDelay": "5",
@@ -390,23 +374,7 @@
         "y": 420,
         "wires": [
             [
-                "fcceeac6.705348"
-            ]
-        ]
-    },
-    {
-        "id": "e1ca57cd.7d2748",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Read spi1",
-        "func": "var spi1=global.get(\"spi1\");\nvar dataBufWrite = Buffer.alloc(4);\nspi1.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var tempMsg = \n    {\n        topic:'temp', \n        payload:\n        {\n            temp0 :flow.get('temp0'),\n            temp1 :-100\n        }\n    };\n    if (err)\n    {\n        node.send(tempMsg);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        tempMsg.payload.temp1 = rawTemp;\n//        console.log(rawTemp);\n        node.send(tempMsg);\n    }\n});\nreturn;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 570,
-        "y": 420,
-        "wires": [
-            [
-                "7e0b94c4.db9bec"
+                "8c86de35.0f8ee"
             ]
         ]
     },
@@ -539,25 +507,64 @@
         ]
     },
     {
-        "id": "34044c9a.9a60f4",
-        "type": "delay",
+        "id": "7074ee11.968b3",
+        "type": "inject",
         "z": "5f562f66.a301e",
         "name": "",
-        "pauseType": "delay",
-        "timeout": "1",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 420,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a678d276.82381",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Read spi0",
+        "func": "var spi0=global.get(\"spi0\");\nvar dataBufWrite = Buffer.alloc(4);\nspi0.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var temp0Msg = {topic:'temp0', payload:-100};\n    if (err)\n    {\n        node.send(temp0Msg);\n        flow.set('temp0', temp0Msg.payload);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        temp0Msg.payload = rawTemp;\n//        console.log(rawTemp);\n        node.send(temp0Msg);\n        flow.set('temp0', temp0Msg.payload);\n    }\n});\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 260,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "30b04dcf.182df2",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Read spi1",
+        "func": "var spi1=global.get(\"spi1\");\nvar dataBufWrite = Buffer.alloc(4);\nspi1.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var tempMsg = \n    {\n        topic:'temp', \n        payload:\n        {\n            temp0 :flow.get('temp0'),\n            temp1 :-100\n        }\n    };\n    if (err)\n    {\n        node.send(tempMsg);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        tempMsg.payload.temp1 = rawTemp;\n//        console.log(rawTemp);\n        node.send(tempMsg);\n    }\n});\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 400,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8c86de35.0f8ee",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Read temps",
+        "func": "// Take three readings to get rid of glitch\nvar spi0=global.get(\"spi0\");\nvar dataBufWrite = Buffer.alloc(4);\nvar icount = 0;\nvar dataArray = [[],[]];\nvar tempMsg = \n{\n    topic:'temp', \n    payload:\n    {\n        temp0 :-100,\n        temp1 :-100\n    }\n};\nvar refreshIntervalId  = setInterval(function () \n{\n    readSpi0(); \n}, 1000); \nfunction readSpi0()\n{\n    global.get(\"spi0\").transfer(dataBufWrite, 4, \n    function(err, dataBufRead)\n    {\n        readData(err, dataBufRead, 0);\n        readSpi1();\n    });\n}\nfunction readSpi1()\n{\n    global.get(\"spi1\").transfer(dataBufWrite, 4, \n    function(err, dataBufRead)\n    {\n        readData(err, dataBufRead,1);\n        ++icount;\n        if (icount > 2)\n        {\n            clearInterval(refreshIntervalId);\n            dataArray[0].sort(function(a, b){return a - b});\n            dataArray[1].sort(function(a, b){return a - b});\n            tempMsg.payload.temp0 = dataArray[0][1];\n            tempMsg.payload.temp1 = dataArray[1][1];\n            node.send(tempMsg);\n        }\n    });\n}\nfunction readData(err, dataBufRead,spi)\n{\n    if (err)\n    {\n        clearInterval(refreshIntervalId);\n        node.send(tempMsg);\n    }\n    else\n    {\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        dataArray[spi][icount] = rawTemp;\n    }\n}\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
         "y": 420,
         "wires": [
             [
-                "e1ca57cd.7d2748"
+                "7e0b94c4.db9bec"
             ]
         ]
     }
