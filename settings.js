@@ -19,7 +19,9 @@
 //var fs = require("fs");
 
 var spi0 = require('pi-spi').initialize("/dev/spidev0.0");
+//spio.clockSpeed(30517);
 var spi1 = require('pi-spi').initialize("/dev/spidev0.1");
+//spi1.clockSpeed(30517);
 
 module.exports = {
     // the tcp port that the Node-RED web server is listening on

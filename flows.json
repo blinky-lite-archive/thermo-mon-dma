@@ -135,7 +135,7 @@
         "qos": "0",
         "retain": "false",
         "broker": "79250bf3.365cc4",
-        "x": 1030,
+        "x": 1170,
         "y": 280,
         "wires": []
     },
@@ -262,7 +262,7 @@
         "type": "function",
         "z": "5f562f66.a301e",
         "name": "Save initSettings in Memory",
-        "func": "flow.set('device', msg.payload);\nreturn msg;",
+        "func": "var spi0=global.get(\"spi0\");\nvar spi1=global.get(\"spi1\");\nspi0.clockSpeed(30e3);\nspi1.clockSpeed(30e3);\nflow.set('device', msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 720,
@@ -354,7 +354,7 @@
         "z": "5f562f66.a301e",
         "name": "",
         "display": "1ab0853e.b9e9fb",
-        "x": 950,
+        "x": 1090,
         "y": 560,
         "wires": []
     },
@@ -370,7 +370,7 @@
         "y": 420,
         "wires": [
             [
-                "e1ca57cd.7d2748"
+                "34044c9a.9a60f4"
             ]
         ]
     },
@@ -402,7 +402,7 @@
         "func": "var spi1=global.get(\"spi1\");\nvar dataBufWrite = Buffer.alloc(4);\nspi1.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var tempMsg = \n    {\n        topic:'temp', \n        payload:\n        {\n            temp0 :flow.get('temp0'),\n            temp1 :-100\n        }\n    };\n    if (err)\n    {\n        node.send(tempMsg);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        tempMsg.payload.temp1 = rawTemp;\n//        console.log(rawTemp);\n        node.send(tempMsg);\n    }\n});\nreturn;",
         "outputs": 1,
         "noerr": 0,
-        "x": 430,
+        "x": 570,
         "y": 420,
         "wires": [
             [
@@ -418,7 +418,7 @@
         "func": "var blueLedState = context.get('blueLedState');\nif (blueLedState == undefined ) blueLedState = 1;\nif (blueLedState == 0)\n{\n    blueLedState = 1;\n}\nelse\n{\n    blueLedState = 0;\n}\ncontext.set('blueLedState', blueLedState);\nreturn [msg,{topic:'blueLedState', payload:blueLedState}];",
         "outputs": 2,
         "noerr": 0,
-        "x": 570,
+        "x": 710,
         "y": 420,
         "wires": [
             [
@@ -440,7 +440,7 @@
         "level": "0",
         "freq": "",
         "out": "out",
-        "x": 740,
+        "x": 880,
         "y": 500,
         "wires": []
     },
@@ -452,7 +452,7 @@
         "func": "var temp0 = Math.round( msg.payload.temp0 * 10.0) / 10.0;\nvar temp1 = Math.round( msg.payload.temp1 * 10.0) / 10.0;\nvar line1Payload = {\"size\":1,\"x\":33,\"y\":17,\"text\":\"T1:\" + temp0.toString() + 'C      '};\nvar line2Payload = {\"size\":1,\"x\":33,\"y\":27,\"text\":\"T2:\" + temp1.toString() + 'C      '};\nvar line3Payload = {\"size\":1,\"x\":33,\"y\":39,\"text\":flow.get('ssid') + '         '};\nvar sigQuality = Math.round(flow.get('linkQuality') * 10.0 / 7.0);\nsigQuality = 100.0;\nvar line4Payload = {\"x\":33,\"y\":50,\"p\":sigQuality};\nvar line5Payload = {\"size\":1,\"x\":55,\"y\":55,\"text\":flow.get('signalLevel').toString() + 'dBm'};\nreturn [\n    {topic:'line1',payload:line1Payload},\n    {topic:'line2',payload:line2Payload},\n    {topic:'line3',payload:line3Payload},\n    {topic:'line4',payload:line4Payload},\n    {topic:'line5',payload:line5Payload},\n    ];",
         "outputs": 5,
         "noerr": 0,
-        "x": 760,
+        "x": 900,
         "y": 420,
         "wires": [
             [
@@ -478,7 +478,7 @@
         "z": "5f562f66.a301e",
         "name": "",
         "display": "1ab0853e.b9e9fb",
-        "x": 950,
+        "x": 1090,
         "y": 360,
         "wires": []
     },
@@ -488,7 +488,7 @@
         "z": "5f562f66.a301e",
         "name": "",
         "display": "1ab0853e.b9e9fb",
-        "x": 950,
+        "x": 1090,
         "y": 400,
         "wires": []
     },
@@ -498,7 +498,7 @@
         "z": "5f562f66.a301e",
         "name": "",
         "display": "1ab0853e.b9e9fb",
-        "x": 950,
+        "x": 1090,
         "y": 440,
         "wires": []
     },
@@ -508,7 +508,7 @@
         "z": "5f562f66.a301e",
         "name": "",
         "display": "1ab0853e.b9e9fb",
-        "x": 950,
+        "x": 1090,
         "y": 480,
         "wires": []
     },
@@ -518,7 +518,7 @@
         "z": "5f562f66.a301e",
         "name": "",
         "display": "1ab0853e.b9e9fb",
-        "x": 950,
+        "x": 1090,
         "y": 520,
         "wires": []
     },
@@ -530,11 +530,34 @@
         "func": "function getAttrObject(device, propName, attrName)\n{\n    var props = device[propName];\n    var attr = props.find(attr => attr.attr === attrName);\n    return attr;\n}\nvar device = flow.get('device');\n\nvar temp1Attr       = getAttrObject(device, 'readings', 'temp-1');\nvar temp2Attr       = getAttrObject(device, 'readings', 'temp-2');\nvar linkQualityAttr = getAttrObject(device, 'readings', 'linkQuality');\nvar signalLevelAttr = getAttrObject(device, 'readings', 'signalLevel');\n\nlinkQualityAttr.value = flow.get('linkQuality');\nsignalLevelAttr.value = flow.get('signalLevel');\n\ntemp1Attr.value = msg.payload.temp0;\ntemp2Attr.value = msg.payload.temp1;\n\nfor (var ii = 0; ii < device.readings.length; ++ii)\n{\n    if (device.readings[ii].type == 'scalar')\n    {\n        device.readings[ii].alarm.value = 0;\n        if (!isNaN(device.readings[ii].value))\n        {\n            if (device.readings[ii].value < device.readings[ii].alarm.limits.low)  device.readings[ii].alarm.value = 1;\n            if (device.readings[ii].value < device.readings[ii].alarm.limits.lolo) device.readings[ii].alarm.value = 3;\n            if (device.readings[ii].value > device.readings[ii].alarm.limits.high) device.readings[ii].alarm.value = 2;\n            if (device.readings[ii].value > device.readings[ii].alarm.limits.hihi) device.readings[ii].alarm.value = 4;\n        }\n    }\n}\nflow.set('device', device);\nvar deviceMessage = {topic : 'reading', payload : device};\nreturn deviceMessage;",
         "outputs": 1,
         "noerr": 0,
-        "x": 790,
+        "x": 930,
         "y": 280,
         "wires": [
             [
                 "93049b70.2dc5c8"
+            ]
+        ]
+    },
+    {
+        "id": "34044c9a.9a60f4",
+        "type": "delay",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "e1ca57cd.7d2748"
             ]
         ]
     }
