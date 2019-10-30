@@ -1,0 +1,541 @@
+[
+    {
+        "id": "5f562f66.a301e",
+        "type": "tab",
+        "label": "device-message-adapter",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "6ad7c930.1a06b8",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#000000",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            }
+        },
+        "site": {
+            "name": "Blinky-Lite-Tutorial",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "79250bf3.365cc4",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "MQTT Broker",
+        "broker": "$(MQTTSERVERIP)",
+        "port": "1883",
+        "clientid": "$(MQTTCLIENTID)",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "1ab0853e.b9e9fb",
+        "type": "oled-config",
+        "z": "",
+        "name": "oled",
+        "width": "128",
+        "height": "64",
+        "address": "3d"
+    },
+    {
+        "id": "93049b70.2dc5c8",
+        "type": "mqtt out",
+        "z": "5f562f66.a301e",
+        "name": "Publish Readings",
+        "topic": "$(MQTTPUBLISHTOPIC)",
+        "qos": "0",
+        "retain": "false",
+        "broker": "79250bf3.365cc4",
+        "x": 1030,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "8cda9011.eab33",
+        "type": "mqtt in",
+        "z": "5f562f66.a301e",
+        "name": "Subscribe Settings",
+        "topic": "$(MQTTSUBSCRIBETOPIC)",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "79250bf3.365cc4",
+        "x": 110,
+        "y": 40,
+        "wires": [
+            [
+                "dc36009e.fdeeb"
+            ]
+        ]
+    },
+    {
+        "id": "dc36009e.fdeeb",
+        "type": "json",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 270,
+        "y": 40,
+        "wires": [
+            [
+                "f3f3f15.081c31",
+                "5902d0c0.241a6"
+            ]
+        ]
+    },
+    {
+        "id": "5902d0c0.241a6",
+        "type": "file",
+        "z": "5f562f66.a301e",
+        "name": "Write initSettings.json",
+        "filename": "initSettings.json",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 980,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f3f3f15.081c31",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "createSettings",
+        "func": "function getAttrObject(device, propName, attrName)\n{\n    var props = device[propName];\n    var attr = props.find(attr => attr.attr === attrName);\n    return attr;\n}\nvar device = msg.payload;\nfor (var ii = 0; ii < msg.payload.settings.length; ++ii)\n{\n    if (msg.payload.settings[ii].type == 'scalar')\n    {\n        msg.payload.settings[ii].alarm.value = 0;\n        if (!isNaN(msg.payload.settings[ii].value))\n        {\n            if (msg.payload.settings[ii].value < msg.payload.settings[ii].alarm.limits.low)  msg.payload.settings[ii].alarm.value = 1;\n            if (msg.payload.settings[ii].value < msg.payload.settings[ii].alarm.limits.lolo) msg.payload.settings[ii].alarm.value = 3;\n            if (msg.payload.settings[ii].value > msg.payload.settings[ii].alarm.limits.high) msg.payload.settings[ii].alarm.value = 2;\n            if (msg.payload.settings[ii].value > msg.payload.settings[ii].alarm.limits.hihi) msg.payload.settings[ii].alarm.value = 4;\n        }\n    }\n}\n\nflow.set('device', msg.payload);    \n\nreturn {topic:'settings',payload:device};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 960,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6eaa13e9.4147bc",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "initSettings",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "163af492.5e952b"
+            ]
+        ]
+    },
+    {
+        "id": "163af492.5e952b",
+        "type": "file in",
+        "z": "5f562f66.a301e",
+        "name": "Read initSettings.json",
+        "filename": "initSettings.json",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 360,
+        "y": 200,
+        "wires": [
+            [
+                "53c95857.5f3d68"
+            ]
+        ]
+    },
+    {
+        "id": "53c95857.5f3d68",
+        "type": "json",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 530,
+        "y": 200,
+        "wires": [
+            [
+                "30f384ea.cf21fc"
+            ]
+        ]
+    },
+    {
+        "id": "30f384ea.cf21fc",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Save initSettings in Memory",
+        "func": "flow.set('device', msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 200,
+        "wires": [
+            [
+                "f3f3f15.081c31"
+            ]
+        ]
+    },
+    {
+        "id": "f69c600b.9542",
+        "type": "exec",
+        "z": "5f562f66.a301e",
+        "command": "iwconfig",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 280,
+        "y": 280,
+        "wires": [
+            [
+                "afd71a05.ebd4e8"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "5b86fa96.034764",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "f69c600b.9542"
+            ]
+        ]
+    },
+    {
+        "id": "afd71a05.ebd4e8",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Get Signal Quality",
+        "func": "var info = msg.payload;\nvar linkStartIndex  = info.indexOf('Link Quality=');\nvar levelStartIndex = info.indexOf('Signal level=');\nvar linkStopIndex   = info.indexOf('/70');\nvar levelStopIndex   = info.lastIndexOf('dBm');\nvar linkQuality = Number(info.substring(linkStartIndex + 13, linkStopIndex));\nvar signalLevel =  Number(info.substring(levelStartIndex + 13, levelStopIndex - 1));\nvar ssid = info.substring(info.indexOf('ESSID') + 7);\nssid = ssid.substring(0,ssid.indexOf('\"'));\nvar val = {linkQuality : linkQuality, signalLevel: signalLevel, ssid:ssid};\nflow.set('linkQuality',linkQuality);\nflow.set('signalLevel', signalLevel);\nflow.set('ssid', ssid);\nreturn {topic :'test',payload : val};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "14be53e6.2ed78c",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "test",
+        "payload": "true",
+        "payloadType": "bool",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 560,
+        "wires": [
+            [
+                "62fa4050.d1044"
+            ]
+        ]
+    },
+    {
+        "id": "62fa4050.d1044",
+        "type": "Clear",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "display": "1ab0853e.b9e9fb",
+        "x": 950,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "fcceeac6.705348",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Read spi0",
+        "func": "var spi0=global.get(\"spi0\");\nvar dataBufWrite = Buffer.alloc(4);\nspi0.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var temp0Msg = {topic:'temp0', payload:-100};\n    if (err)\n    {\n        node.send(temp0Msg);\n        flow.set('temp0', temp0Msg.payload);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        temp0Msg.payload = rawTemp;\n//        console.log(rawTemp);\n        node.send(temp0Msg);\n        flow.set('temp0', temp0Msg.payload);\n    }\n});\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 420,
+        "wires": [
+            [
+                "e1ca57cd.7d2748"
+            ]
+        ]
+    },
+    {
+        "id": "bf468d1e.232ab",
+        "type": "inject",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "2",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "x": 120,
+        "y": 420,
+        "wires": [
+            [
+                "fcceeac6.705348"
+            ]
+        ]
+    },
+    {
+        "id": "e1ca57cd.7d2748",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Read spi1",
+        "func": "var spi1=global.get(\"spi1\");\nvar dataBufWrite = Buffer.alloc(4);\nspi1.transfer(dataBufWrite, 4, function(err, dataBufRead)\n{\n    var tempMsg = \n    {\n        topic:'temp', \n        payload:\n        {\n            temp0 :flow.get('temp0'),\n            temp1 :-100\n        }\n    };\n    if (err)\n    {\n        node.send(tempMsg);\n    }\n    else\n    {\n//        console.log(dataBufRead);\n        var bits = [];\n        var bitString = ' ';\n        for (var ibyte = 0; ibyte < 4; ++ibyte)\n        {\n            for (var ibit = 0; ibit < 8; ++ibit)\n            {\n                bits[31 - (ibyte * 8 + 7 - ibit)] = ((dataBufRead[ibyte] >> ibit) % 2);\n            }\n        }\n        rawTemp = 0.0;\n        pow2 = 1;\n        for (var ibit = 18; ibit < 31; ++ibit)\n        {\n            rawTemp = rawTemp + pow2 * bits[ibit];\n            pow2 = pow2 * 2;\n        }\n        rawTemp = rawTemp * 0.25;\n        tempMsg.payload.temp1 = rawTemp;\n//        console.log(rawTemp);\n        node.send(tempMsg);\n    }\n});\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 420,
+        "wires": [
+            [
+                "7e0b94c4.db9bec"
+            ]
+        ]
+    },
+    {
+        "id": "7e0b94c4.db9bec",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Blink light",
+        "func": "var blueLedState = context.get('blueLedState');\nif (blueLedState == undefined ) blueLedState = 1;\nif (blueLedState == 0)\n{\n    blueLedState = 1;\n}\nelse\n{\n    blueLedState = 0;\n}\ncontext.set('blueLedState', blueLedState);\nreturn [msg,{topic:'blueLedState', payload:blueLedState}];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 570,
+        "y": 420,
+        "wires": [
+            [
+                "70801fd0.b50f9",
+                "fcae4e04.4f85"
+            ],
+            [
+                "fa0fe8c9.4257f8"
+            ]
+        ]
+    },
+    {
+        "id": "fa0fe8c9.4257f8",
+        "type": "rpi-gpio out",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "pin": "16",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "x": 740,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "70801fd0.b50f9",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Display Output",
+        "func": "var temp0 = Math.round( msg.payload.temp0 * 10.0) / 10.0;\nvar temp1 = Math.round( msg.payload.temp1 * 10.0) / 10.0;\nvar line1Payload = {\"size\":1,\"x\":33,\"y\":17,\"text\":\"T1:\" + temp0.toString() + 'C      '};\nvar line2Payload = {\"size\":1,\"x\":33,\"y\":27,\"text\":\"T2:\" + temp1.toString() + 'C      '};\nvar line3Payload = {\"size\":1,\"x\":33,\"y\":39,\"text\":flow.get('ssid') + '         '};\nvar sigQuality = Math.round(flow.get('linkQuality') * 10.0 / 7.0);\nsigQuality = 100.0;\nvar line4Payload = {\"x\":33,\"y\":50,\"p\":sigQuality};\nvar line5Payload = {\"size\":1,\"x\":55,\"y\":55,\"text\":flow.get('signalLevel').toString() + 'dBm'};\nreturn [\n    {topic:'line1',payload:line1Payload},\n    {topic:'line2',payload:line2Payload},\n    {topic:'line3',payload:line3Payload},\n    {topic:'line4',payload:line4Payload},\n    {topic:'line5',payload:line5Payload},\n    ];",
+        "outputs": 5,
+        "noerr": 0,
+        "x": 760,
+        "y": 420,
+        "wires": [
+            [
+                "4ed11460.2b640c"
+            ],
+            [
+                "a339a323.750f8"
+            ],
+            [
+                "49d9de81.9ad82"
+            ],
+            [
+                "49c45386.0ab40c"
+            ],
+            [
+                "e7cd1c3f.f9c6c"
+            ]
+        ]
+    },
+    {
+        "id": "4ed11460.2b640c",
+        "type": "String",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "display": "1ab0853e.b9e9fb",
+        "x": 950,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a339a323.750f8",
+        "type": "String",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "display": "1ab0853e.b9e9fb",
+        "x": 950,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "49d9de81.9ad82",
+        "type": "String",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "display": "1ab0853e.b9e9fb",
+        "x": 950,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "49c45386.0ab40c",
+        "type": "Wifi",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "display": "1ab0853e.b9e9fb",
+        "x": 950,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "e7cd1c3f.f9c6c",
+        "type": "String",
+        "z": "5f562f66.a301e",
+        "name": "",
+        "display": "1ab0853e.b9e9fb",
+        "x": 950,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "fcae4e04.4f85",
+        "type": "function",
+        "z": "5f562f66.a301e",
+        "name": "Prepare MQTT message",
+        "func": "function getAttrObject(device, propName, attrName)\n{\n    var props = device[propName];\n    var attr = props.find(attr => attr.attr === attrName);\n    return attr;\n}\nvar device = flow.get('device');\n\nvar temp1Attr       = getAttrObject(device, 'readings', 'temp-1');\nvar temp2Attr       = getAttrObject(device, 'readings', 'temp-2');\nvar linkQualityAttr = getAttrObject(device, 'readings', 'linkQuality');\nvar signalLevelAttr = getAttrObject(device, 'readings', 'signalLevel');\n\nlinkQualityAttr.value = flow.get('linkQuality');\nsignalLevelAttr.value = flow.get('signalLevel');\n\ntemp1Attr.value = msg.payload.temp0;\ntemp2Attr.value = msg.payload.temp1;\n\nfor (var ii = 0; ii < device.readings.length; ++ii)\n{\n    if (device.readings[ii].type == 'scalar')\n    {\n        device.readings[ii].alarm.value = 0;\n        if (!isNaN(device.readings[ii].value))\n        {\n            if (device.readings[ii].value < device.readings[ii].alarm.limits.low)  device.readings[ii].alarm.value = 1;\n            if (device.readings[ii].value < device.readings[ii].alarm.limits.lolo) device.readings[ii].alarm.value = 3;\n            if (device.readings[ii].value > device.readings[ii].alarm.limits.high) device.readings[ii].alarm.value = 2;\n            if (device.readings[ii].value > device.readings[ii].alarm.limits.hihi) device.readings[ii].alarm.value = 4;\n        }\n    }\n}\nflow.set('device', device);\nvar deviceMessage = {topic : 'reading', payload : device};\nreturn deviceMessage;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 790,
+        "y": 280,
+        "wires": [
+            [
+                "93049b70.2dc5c8"
+            ]
+        ]
+    }
+]
